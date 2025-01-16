@@ -2,9 +2,9 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"os"
 	"yoga-management/internal/db"
+	"yoga-management/internal/handlers"
 	"yoga-management/internal/models"
 
 	"github.com/gin-gonic/gin"
@@ -13,21 +13,26 @@ import (
 
 func main() {
 
+	// Load Environment Variables
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
+	// Migrate Models of DB
 	db.Database.AutoMigrate(&models.Class{})
 
+	// Router config
 	router := gin.Default()
 
-	router.GET("/classes", func(ctx *gin.Context) {
-		var classes []models.Class
-		db.Database.Find(&classes)
-		ctx.JSON(http.StatusOK, classes)
-	})
+	// Paths
+	router.GET("/classes", handlers.GetClasses)
+	router.GET("/classes/:id", handlers.GetClassByID)
+	router.POST("/classes", handlers.CreateClass)
+	router.PUT("/classes/:id", handlers.UpdateClass)
+	router.DELETE("/classes/:id", handlers.DeleteClass)
 
+	//Listen and Serve APP
 	port := os.Getenv("APP_PORT")
 	router.Run(port)
 
