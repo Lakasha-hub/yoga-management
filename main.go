@@ -21,6 +21,7 @@ func main() {
 
 	// Migrate Models of DB
 	db.Database.AutoMigrate(&models.Class{})
+	db.Database.AutoMigrate(&models.User{})
 
 	// Router config
 	router := gin.Default()
@@ -31,6 +32,7 @@ func main() {
 	router.POST("/classes", handlers.CreateClass)
 	router.PUT("/classes/:id", handlers.UpdateClass)
 	router.DELETE("/classes/:id", handlers.DeleteClass)
+	router.GET("/register", handlers.CreateUser)
 
 	//Listen and Serve APP
 	port := os.Getenv("APP_PORT")

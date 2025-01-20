@@ -6,6 +6,7 @@ import (
 	"time"
 	"yoga-management/internal/db"
 	"yoga-management/internal/models"
+	"yoga-management/internal/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -123,4 +124,52 @@ func DeleteClass(ctx *gin.Context) {
 	// Delete Class by ID
 	db.Database.Delete(&class)
 	ctx.JSON(http.StatusOK, gin.H{"payload": "The Class has been deleted succesfully"})
+}
+
+func CreateUser(ctx *gin.Context) {
+	// Get json input values
+	var json models.CreateUserDTO
+	if err := ctx.ShouldBindJSON(&json); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Verify if user already exists
+	var user_exists models.User
+	if err := db.Database.Where("email = ?", json.Email).First(&user_exists).Error; err == nil {
+		ctx.JSON(http.StatusConflict, gin.H{"error": "User already exists"})
+		return
+	}
+
+	// Hash password
+	hashedPassword, err := utils.HashPassword(json.Password)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error encrypting password"})
+		return
+	}
+
+	//Create new User
+	newUser := models.User{
+		NameUser: json.NameUser,
+		Email:    json.Email,
+		Password: hashedPassword,
+	}
+
+	// Save User in DB
+	if err := db.Database.Save(&newUser).Error; err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating user in database"})
+		return
+	}
+
+	// Parse user info to response
+	responseUser := models.ResponseUser{
+		ID:        newUser.ID,
+		NameUser:  newUser.NameUser,
+		Email:     newUser.Email,
+		CreatedAt: newUser.CreatedAt,
+		UpdatedAt: newUser.UpdatedAt,
+	}
+
+	ctx.JSON(http.StatusCreated, gin.H{"payload": responseUser})
+
 }

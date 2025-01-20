@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-// Model DB
+// Model DB Class
 type Class struct {
 	ID        uint      `json:"id"`
 	NameClass string    `json:"name"`
@@ -29,4 +29,37 @@ type UpdateClassDTO struct {
 	Professor string `json:"professor"`
 	DateClass string `json:"date"`
 	Capacity  int    `json:"capacity"`
+}
+
+// Model DB User
+type User struct {
+	ID        uint   `json:"id"`
+	NameUser  string `json:"name"`
+	Email     string `json:"email"`
+	Password  string
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// Model when creating User
+type CreateUserDTO struct {
+	NameUser string `json:"name" binding:"required"`
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
+// Model when updating User
+type UpdateUserDTO struct {
+	NameUser string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+// Model for response User
+type ResponseUser struct {
+	ID        uint      `json:"id"`
+	NameUser  string    `json:"name"`
+	Email     string    `json:"email"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
