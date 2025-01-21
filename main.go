@@ -33,6 +33,7 @@ func main() {
 	router.PUT("/classes/:id", handlers.UpdateClass)
 	router.DELETE("/classes/:id", handlers.DeleteClass)
 	router.GET("/register", handlers.CreateUser)
+	router.GET("/login", handlers.Login)
 
 	//Listen and Serve APP
 	port := os.Getenv("APP_PORT")

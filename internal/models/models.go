@@ -55,6 +55,12 @@ type UpdateUserDTO struct {
 	Password string `json:"password"`
 }
 
+// Model when login User
+type LoginUserDTO struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 // Model for response User
 type ResponseUser struct {
 	ID        uint      `json:"id"`

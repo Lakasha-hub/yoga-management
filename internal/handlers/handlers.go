@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 	"yoga-management/internal/db"
 	"yoga-management/internal/models"
@@ -35,7 +36,7 @@ func CreateClass(ctx *gin.Context) {
 	// Get json input values
 	var json models.CreateClassDTO
 	if err := ctx.ShouldBindJSON(&json); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Error when binding json"})
 		return
 	}
 
@@ -85,7 +86,7 @@ func UpdateClass(ctx *gin.Context) {
 	// Get json input values
 	var json models.UpdateClassDTO
 	if err := ctx.ShouldBindJSON(&json); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Error when binding json"})
 		return
 	}
 
@@ -130,7 +131,7 @@ func CreateUser(ctx *gin.Context) {
 	// Get json input values
 	var json models.CreateUserDTO
 	if err := ctx.ShouldBindJSON(&json); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Error when binding json"})
 		return
 	}
 
@@ -172,4 +173,34 @@ func CreateUser(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusCreated, gin.H{"payload": responseUser})
 
+}
+
+func Login(ctx *gin.Context) {
+	// Get json input values
+	var json models.LoginUserDTO
+	if err := ctx.ShouldBindJSON(&json); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Error when binding json"})
+		return
+	}
+
+	// Verify if user is ADMIN
+	if json.Email == os.Getenv("ADMIN_EMAIL") && json.Password == os.Getenv("ADMIN_PASSWORD") {
+		ctx.JSON(http.StatusOK, gin.H{"payload": "Login OK, Welcome Admin!"})
+		return
+	}
+
+	// Verify if user already exists
+	var user_exists models.User
+	if err := db.Database.Where("email = ?", json.Email).First(&user_exists).Error; err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "Incorrect email or password"})
+		return
+	}
+
+	// Verify password sent
+	if err := utils.VerifyPassword(user_exists.Password, json.Password); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Incorrect email or password"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"payload": "Login OK"})
 }
