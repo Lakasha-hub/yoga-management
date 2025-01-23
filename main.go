@@ -5,6 +5,7 @@ import (
 	"os"
 	"yoga-management/internal/db"
 	"yoga-management/internal/handlers"
+	"yoga-management/internal/middlewares"
 	"yoga-management/internal/models"
 
 	"github.com/gin-gonic/gin"
@@ -26,14 +27,20 @@ func main() {
 	// Router config
 	router := gin.Default()
 
-	// Paths
-	router.GET("/classes", handlers.GetClasses)
-	router.GET("/classes/:id", handlers.GetClassByID)
-	router.POST("/classes", handlers.CreateClass)
-	router.PUT("/classes/:id", handlers.UpdateClass)
-	router.DELETE("/classes/:id", handlers.DeleteClass)
+	// Public Paths
 	router.GET("/register", handlers.CreateUser)
 	router.GET("/login", handlers.Login)
+
+	// Protected Paths
+	protected := router.Group("/api", middlewares.AuthenticateMiddleware)
+	{
+		protected.GET("/classes", handlers.GetClasses)
+		protected.GET("/classes/:id", handlers.GetClassByID)
+		protected.POST("/classes", handlers.CreateClass)
+		protected.PUT("/classes/:id", handlers.UpdateClass)
+		protected.DELETE("/classes/:id", handlers.DeleteClass)
+
+	}
 
 	//Listen and Serve APP
 	port := os.Getenv("APP_PORT")

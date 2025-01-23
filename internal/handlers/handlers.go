@@ -176,6 +176,18 @@ func CreateUser(ctx *gin.Context) {
 }
 
 func Login(ctx *gin.Context) {
+	// Verify if cookie already exists
+	cookie, err := ctx.Cookie("tkn")
+	if cookie != "" && err == nil {
+		// Validate cookie
+		_, err = utils.ValidateJWT(cookie)
+		if err != nil {
+			// Redirect to home
+			ctx.JSON(http.StatusOK, gin.H{"payload": "Already logged in"})
+			return
+		}
+	}
+
 	// Get json input values
 	var json models.LoginUserDTO
 	if err := ctx.ShouldBindJSON(&json); err != nil {
@@ -183,8 +195,18 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
+	// Token to set cookie
+	var tokenStr string
+
 	// Verify if user is ADMIN
 	if json.Email == os.Getenv("ADMIN_EMAIL") && json.Password == os.Getenv("ADMIN_PASSWORD") {
+		// Generate Admin cookie
+		tokenStr, err := utils.GenerateJWT(json.Email)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating token"})
+			return
+		}
+		ctx.SetCookie("tkn", tokenStr, 3600, "/", "", false, true)
 		ctx.JSON(http.StatusOK, gin.H{"payload": "Login OK, Welcome Admin!"})
 		return
 	}
@@ -202,5 +224,12 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
+	// Set user cookie
+	tokenStr, err = utils.GenerateJWT(json.Email)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating token"})
+		return
+	}
+	ctx.SetCookie("tkn", tokenStr, 3600, "/", "", false, true)
 	ctx.JSON(http.StatusOK, gin.H{"payload": "Login OK"})
 }
