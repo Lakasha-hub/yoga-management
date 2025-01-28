@@ -28,8 +28,10 @@ func main() {
 	router := gin.Default()
 
 	// Public Paths
-	router.GET("/register", handlers.CreateUser)
+	router.POST("/register", handlers.CreateUser)
+	router.POST("/login", handlers.LoginUser)
 	router.GET("/login", handlers.Login)
+	router.POST("/logout", handlers.Logout)
 
 	// Protected Paths
 	protected := router.Group("/api", middlewares.AuthenticateMiddleware)
