@@ -28,11 +28,12 @@ func main() {
 	router := gin.Default()
 
 	// Public Paths
-	router.POST("/register", handlers.CreateUser)
-	router.POST("/login", handlers.LoginUser)
-	router.POST("/logout", handlers.Logout)
-	router.GET("/classes", handlers.GetClasses)
-	router.GET("/classes/:id", handlers.GetClassByID)
+	public := router.Group("/api")
+	public.POST("/register", handlers.CreateUser)
+	public.POST("/login", handlers.LoginUser)
+	public.POST("/logout", handlers.Logout)
+	public.GET("/classes", handlers.GetClasses)
+	public.GET("/classes/:id", handlers.GetClassByID)
 
 	// Views
 	router.GET("/login", handlers.Login)
@@ -40,12 +41,9 @@ func main() {
 
 	// Protected Paths
 	protected := router.Group("/api", middlewares.AuthenticateMiddleware)
-	{
-		protected.POST("/classes", handlers.CreateClass)
-		protected.PUT("/classes/:id", handlers.UpdateClass)
-		protected.DELETE("/classes/:id", handlers.DeleteClass)
-
-	}
+	protected.POST("/classes", handlers.CreateClass)
+	protected.PUT("/classes/:id", handlers.UpdateClass)
+	protected.DELETE("/classes/:id", handlers.DeleteClass)
 
 	//Listen and Serve APP
 	port := os.Getenv("APP_PORT")
