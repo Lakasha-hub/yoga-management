@@ -1,0 +1,19 @@
+{{ define "base" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ template "title" .}}</title>
+</head>
+<body>
+    <header> Header </header>
+
+    {{ template "content" .}}
+
+    <footer>
+        <p>Creado por Lakasha-hub &copy; 2025</p>
+    </footer>
+</body>
+</html>
+{{ end }}
