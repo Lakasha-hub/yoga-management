@@ -31,6 +31,8 @@ func main() {
 	router.POST("/register", handlers.CreateUser)
 	router.POST("/login", handlers.LoginUser)
 	router.POST("/logout", handlers.Logout)
+	router.GET("/classes", handlers.GetClasses)
+	router.GET("/classes/:id", handlers.GetClassByID)
 
 	// Views
 	router.GET("/login", handlers.Login)
@@ -39,8 +41,6 @@ func main() {
 	// Protected Paths
 	protected := router.Group("/api", middlewares.AuthenticateMiddleware)
 	{
-		protected.GET("/classes", handlers.GetClasses)
-		protected.GET("/classes/:id", handlers.GetClassByID)
 		protected.POST("/classes", handlers.CreateClass)
 		protected.PUT("/classes/:id", handlers.UpdateClass)
 		protected.DELETE("/classes/:id", handlers.DeleteClass)
