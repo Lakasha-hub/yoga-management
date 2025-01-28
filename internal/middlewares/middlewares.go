@@ -1,11 +1,11 @@
 package middlewares
 
 import (
-	"fmt"
 	"net/http"
 	"yoga-management/internal/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func AuthenticateMiddleware(ctx *gin.Context) {
@@ -25,6 +25,22 @@ func AuthenticateMiddleware(ctx *gin.Context) {
 		return
 	}
 
-	fmt.Printf("Token validated succesfully. Claims: %+v\\n", token.Claims)
+	// Get claims
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid Claims"})
+		ctx.Abort()
+		return
+	}
+
+	// Set Role in gin Ctx
+	if role, exists := claims["role"].(string); exists {
+		ctx.Set("role", role)
+	} else {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Role not found"})
+		ctx.Abort()
+		return
+	}
+
 	ctx.Next()
 }

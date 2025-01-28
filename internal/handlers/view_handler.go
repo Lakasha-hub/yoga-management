@@ -20,6 +20,10 @@ func Login(ctx *gin.Context) {
 	renderTemplate(ctx, "login.html", data)
 }
 
+func Unauthorized(ctx *gin.Context) {
+	renderTemplate(ctx, "unauthorized.html", nil)
+}
+
 func renderTemplate(ctx *gin.Context, page string, data any) {
 	t := template.Must(template.ParseFiles("./templates/base.html", templateDir+page))
 

@@ -30,8 +30,11 @@ func main() {
 	// Public Paths
 	router.POST("/register", handlers.CreateUser)
 	router.POST("/login", handlers.LoginUser)
-	router.GET("/login", handlers.Login)
 	router.POST("/logout", handlers.Logout)
+
+	// Views
+	router.GET("/login", handlers.Login)
+	router.GET("/unauthorized", handlers.Unauthorized)
 
 	// Protected Paths
 	protected := router.Group("/api", middlewares.AuthenticateMiddleware)

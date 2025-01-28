@@ -31,6 +31,14 @@ func GetClassByID(ctx *gin.Context) {
 }
 
 func CreateClass(ctx *gin.Context) {
+
+	// Verify Admin Role
+	role, _ := ctx.Get("role")
+	if role != "admin" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"Error": "Only Admin can create classes"})
+		return
+	}
+
 	// Get json input values
 	var json models.CreateClassDTO
 	if err := ctx.ShouldBindJSON(&json); err != nil {
@@ -71,6 +79,13 @@ func CreateClass(ctx *gin.Context) {
 
 func UpdateClass(ctx *gin.Context) {
 
+	// Verify Admin Role
+	role, _ := ctx.Get("role")
+	if role != "admin" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"Error": "Only Admin can update classes"})
+		return
+	}
+
 	// Get id of class
 	id := ctx.Param("id")
 
@@ -109,6 +124,14 @@ func UpdateClass(ctx *gin.Context) {
 }
 
 func DeleteClass(ctx *gin.Context) {
+
+	// Verify Admin Role
+	role, _ := ctx.Get("role")
+	if role != "admin" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"Error": "Only Admin can delete classes"})
+		return
+	}
+
 	// Get id of class
 	id := ctx.Param("id")
 
