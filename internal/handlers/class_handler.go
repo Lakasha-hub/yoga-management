@@ -62,10 +62,11 @@ func CreateClass(ctx *gin.Context) {
 
 	// Parse CreateClassDTO to DB model Class
 	newClass := models.Class{
-		NameClass: json.NameClass,
-		Professor: json.Professor,
-		DateClass: dateClass,
-		Capacity:  json.Capacity,
+		NameClass:   json.NameClass,
+		Professor:   json.Professor,
+		Description: json.Description,
+		DateClass:   dateClass,
+		Capacity:    json.Capacity,
 	}
 
 	// Save new Class in DB
@@ -105,9 +106,10 @@ func UpdateClass(ctx *gin.Context) {
 
 	// Only update non-zero fields by default
 	updatedValues := models.Class{
-		NameClass: json.NameClass,
-		Professor: json.Professor,
-		Capacity:  json.Capacity,
+		NameClass:   json.NameClass,
+		Professor:   json.Professor,
+		Description: json.Description,
+		Capacity:    json.Capacity,
 	}
 
 	// Parse DateTime if sent
