@@ -1,0 +1,30 @@
+{{template "base" .}}
+
+{{define "title"}} Welcome to Yoga Center - Home {{end}}
+
+{{define "content"}}
+<div class="content-wrapper">
+    <main>
+        <div class="container py-5">
+            <h2 class="text-center mb-5">Próximas clases este mes</h2>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {{range .Classes}}
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title text-herbal-medium">{{.NameClass}}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{.DateClass}}</h6>
+                            <p class="card-text">{{.Description}}</p>
+                            <p class="card-text"><strong>Capacidad: </strong>{{.Capacity}}</p>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-herbal w-100">Confirmar Asistencia</button>
+                        </div>
+                    </div>
+                </div>
+                {{end}}
+            </div>
+        </div>
+    </main>
+</div>
+{{end}}

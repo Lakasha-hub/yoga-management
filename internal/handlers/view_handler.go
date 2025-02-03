@@ -3,6 +3,8 @@ package handlers
 import (
 	"html/template"
 	"net/http"
+	"yoga-management/internal/db"
+	"yoga-management/internal/models"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,8 +22,30 @@ func Login(ctx *gin.Context) {
 	renderTemplate(ctx, "login.html", data)
 }
 
-func Unauthorized(ctx *gin.Context) {
-	renderTemplate(ctx, "unauthorized.html", nil)
+func Register(ctx *gin.Context) {
+	data := struct {
+		Title string
+		Msg   string
+	}{
+		Title: "Yoga Center - Sign up",
+		Msg:   "Welcome to Yoga Center - Please Sign up",
+	}
+	renderTemplate(ctx, "register.html", data)
+}
+
+func Home(ctx *gin.Context) {
+
+	// Get Classes
+	var classes []models.Class
+	db.Database.Find(&classes)
+
+	data := struct {
+		Classes []models.Class
+	}{
+		Classes: classes,
+	}
+
+	renderTemplate(ctx, "index.html", data)
 }
 
 func renderTemplate(ctx *gin.Context, page string, data any) {

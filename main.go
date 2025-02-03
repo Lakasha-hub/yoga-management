@@ -27,6 +27,9 @@ func main() {
 	// Router config
 	router := gin.Default()
 
+	// Add Access to static archives
+	router.Static("/static", "./static")
+
 	// Public Paths
 	public := router.Group("/api")
 	public.POST("/register", handlers.CreateUser)
