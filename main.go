@@ -35,15 +35,19 @@ func main() {
 	public.GET("/classes", handlers.GetClasses)
 	public.GET("/classes/:id", handlers.GetClassByID)
 
-	// Views
-	router.GET("/login", handlers.Login)
-	router.GET("/unauthorized", handlers.Unauthorized)
-
 	// Protected Paths
 	protected := router.Group("/api", middlewares.AuthenticateMiddleware)
 	protected.POST("/classes", handlers.CreateClass)
 	protected.PUT("/classes/:id", handlers.UpdateClass)
 	protected.DELETE("/classes/:id", handlers.DeleteClass)
+
+	// Publics Views
+	router.GET("/login", handlers.Login)
+	router.GET("/register", handlers.Register)
+
+	// Protected Views
+	// Falta auth middleware
+	router.GET("/home", handlers.Home)
 
 	//Listen and Serve APP
 	port := os.Getenv("APP_PORT")
