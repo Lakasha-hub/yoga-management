@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/static/base.css">
 </head>
 <body>
+    <div id="alert" class="position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 1050;"></div>
 
     <div class="page-container">
         <header>
@@ -16,6 +17,7 @@
                 <h1 class="display-4">Centro de Yoga Natural</h1>
                 <p class="lead text-herbal-light">Conecta con la naturaleza, encuentra tu equilibrio</p>
             </div>
+            
         </header>
 
         {{ template "content" .}}
@@ -31,5 +33,6 @@
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/base.js"></script>
 </html>
 {{ end }}
